@@ -895,8 +895,22 @@ See COM_OBL_ACT and COM_OBL_RC_ACT to configure action</short_desc>
     <parameter default="1" name="COM_POS_FS_DELAY" type="INT32">
       <short_desc>Loss of position failsafe activation delay</short_desc>
       <long_desc>This sets number of seconds that the position checks need to be failed before the failsafe will activate. The default value has been optimised for rotary wing applications. For fixed wing applications, a larger value between 5 and 10 should be used.</long_desc>
+      <min>1</min>
+      <max>100</max>
       <unit>sec</unit>
       <reboot_required>true</reboot_required>
+      <scope>modules/commander</scope>
+    </parameter>
+    <parameter default="5" name="COM_POS_FS_EPH" type="FLOAT">
+      <short_desc>Horizontal position error threshold</short_desc>
+      <long_desc>This is the horizontal position error (EPV) threshold that will trigger a failsafe. The default is appropriate for a multicopter. Can be increased for a fixed-wing.</long_desc>
+      <unit>m</unit>
+      <scope>modules/commander</scope>
+    </parameter>
+    <parameter default="10" name="COM_POS_FS_EPV" type="FLOAT">
+      <short_desc>Vertical position error threshold</short_desc>
+      <long_desc>This is the vertical position error (EPV) threshold that will trigger a failsafe. The default is appropriate for a multicopter. Can be increased for a fixed-wing.</long_desc>
+      <unit>m</unit>
       <scope>modules/commander</scope>
     </parameter>
     <parameter default="10" name="COM_POS_FS_GAIN" type="INT32">
@@ -908,6 +922,8 @@ See COM_OBL_ACT and COM_OBL_RC_ACT to configure action</short_desc>
     <parameter default="30" name="COM_POS_FS_PROB" type="INT32">
       <short_desc>Loss of position probation delay at takeoff</short_desc>
       <long_desc>The probation delay is the number of seconds that the EKF innovation checks need to pass for the position to be declared good after it has been declared bad. The probation delay will be reset to this parameter value when takeoff is detected. After takeoff, if position checks are passing, the probation delay will reduce by one second for every lapsed second of valid position down to a minimum of 1 second. If position checks are failing, the probation delay will increase by COM_POS_FS_GAIN seconds for every lapsed second up to a maximum of 100 seconds. The default value has been optimised for rotary wing applications. For fixed wing applications, a value of 1 should be used.</long_desc>
+      <min>1</min>
+      <max>100</max>
       <unit>sec</unit>
       <reboot_required>true</reboot_required>
       <scope>modules/commander</scope>
@@ -954,6 +970,12 @@ See COM_OBL_ACT and COM_OBL_RC_ACT to configure action</short_desc>
       <unit>%</unit>
       <decimal>0</decimal>
       <increment>0.05</increment>
+      <scope>modules/commander</scope>
+    </parameter>
+    <parameter default="1" name="COM_VEL_FS_EVH" type="FLOAT">
+      <short_desc>Horizontal velocity error threshold</short_desc>
+      <long_desc>This is the horizontal velocity error (EVH) threshold that will trigger a failsafe. The default is appropriate for a multicopter. Can be increased for a fixed-wing.</long_desc>
+      <unit>m</unit>
       <scope>modules/commander</scope>
     </parameter>
   </group>
@@ -1611,6 +1633,13 @@ Baro and Magnetometer data will be averaged before downsampling, other data will
       <max>50.0</max>
       <unit>m</unit>
       <decimal>1</decimal>
+      <scope>modules/ekf2</scope>
+    </parameter>
+    <parameter default="5000000" name="EKF2_NOAID_TOUT" type="INT32">
+      <short_desc>Maximum lapsed time from last fusion of measurements that constrain velocity drift before the EKF will report the horizontal nav solution as invalid</short_desc>
+      <min>500000</min>
+      <max>10000000</max>
+      <unit>uSec</unit>
       <scope>modules/ekf2</scope>
     </parameter>
     <parameter default="5" name="EKF2_OF_DELAY" type="FLOAT">
@@ -9471,7 +9500,7 @@ to accelerate forward if necessary</short_desc>
     </parameter>
     <parameter default="0.0" name="VT_FW_ALT_ERR" type="FLOAT">
       <short_desc>Adaptive QuadChute</short_desc>
-      <long_desc>Maximum negative altitude error, when in fixed wing the altitude drops below this copared to the altitude setpoint the vehicle will transition back to MC mode and enter failsafe RTL</long_desc>
+      <long_desc>Maximum negative altitude error for fixed wing flight. If the altitude drops below this value below the altitude setpoint the vehicle will transition back to MC mode and enter failsafe RTL.</long_desc>
       <min>0.0</min>
       <max>200.0</max>
       <scope>modules/vtol_att_control</scope>
